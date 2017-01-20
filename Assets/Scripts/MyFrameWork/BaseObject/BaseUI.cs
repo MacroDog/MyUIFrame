@@ -15,12 +15,22 @@ namespace MyFrameWork
                 if (_cacheGameObject == null)
                     _cacheGameObject = this.gameObject;
                 return _cacheGameObject;
-
             }
         }
         //缓存当前UITransform
         private Transform _cacheTransform;
-        public Transform CacheTransform;
+        public Transform CacheTransform
+        {
+            get
+            {
+                if (_cacheTransform == null)
+                {
+                    _cacheTransform = this.transform;
+                }
+                return _cacheTransform;
+            }
+        }
+            
         #endregion
 
         #region UI状态和UIType
@@ -37,7 +47,7 @@ namespace MyFrameWork
                 EnumObjectState oldState = this._state;
                 _state -= value;
                 if (StateChange != null)
-                    StateChange(this.gameObject, oldState, _state);
+                    StateChange(this, oldState, _state);
             }
         }
         public abstract EnumUIType GetUIType();
@@ -46,15 +56,12 @@ namespace MyFrameWork
         {
             _state = EnumObjectState.Initial;
             OnAwake();
-
-
         }
         // Use this for initialization
         void Start()
         {
 
         }
-
         // Update is called once per frame
         void Update()
         {
@@ -63,13 +70,16 @@ namespace MyFrameWork
                 OnUpdate(Time.deltaTime);
             }
         }
-        void Release()
+
+        //释放当前UI
+        public void Release()
         {
             this._state = EnumObjectState.Closing;
             OnRelease();
             GameObject.Destroy(this.gameObject);
 
         }
+
         void Destory()
         {
             this._state = EnumObjectState.None;
@@ -91,7 +101,7 @@ namespace MyFrameWork
         {
             this.OnCloseUIAudio();
             this.State = EnumObjectState.None;
-            
+
         }
         protected virtual void OnDestroy()
         {
@@ -114,6 +124,7 @@ namespace MyFrameWork
         {
             this.State = EnumObjectState.Loading;
         }
+        //打开UI时自动设置 加载数据
         public void SetUIWhenOpening(params object[] uiparams)
         {
             SetUI(uiparams);
@@ -127,13 +138,13 @@ namespace MyFrameWork
         private IEnumerator loadDataAsyn()
         {
             yield return new WaitForSeconds(0);
-            if (this.State ==EnumObjectState.Loading)
+            if (this.State == EnumObjectState.Loading)
             {
                 this.OnLoadData();
                 this.State = EnumObjectState.Ready;
             }
         }
-        
+
     }
 }
 

@@ -3,10 +3,10 @@ using System.Collections;
 using MyFrameWork;
 using System;
 
-public class TestOne :BaseUI  {
+public class TestTwo : BaseUI {
     public override EnumUIType GetUIType()
     {
-        return EnumUIType.TestOne;
+        return EnumUIType.TestTwo;
     }
 
     // Use this for initialization
@@ -18,9 +18,5 @@ public class TestOne :BaseUI  {
 	void Update () {
 	
 	}
-    public void Open()
-    {
-        UIManager.Intance.OpenUICloseOthers(EnumUIType.TestTwo);
-        Debug.Log("asd");
-    }
+    
 }
